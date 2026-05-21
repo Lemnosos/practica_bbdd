@@ -1,32 +1,31 @@
--- ============================================================
+
 -- Bootcamp School Database - DDL (Create Tables)
--- ============================================================
 
 -- Tablas de catálogo / lookup tables
 
 CREATE TABLE campus (
     campus_id   SERIAL PRIMARY KEY,
-    nombre      VARCHAR(100) NOT NULL UNIQUE
+    nombre      VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE vertical (
     vertical_id SERIAL PRIMARY KEY,
-    nombre      VARCHAR(100) NOT NULL UNIQUE   -- 'DS', 'FS', ...
+    nombre      VARCHAR(50) NOT NULL UNIQUE   
 );
 
 CREATE TABLE promocion (
     promocion_id SERIAL PRIMARY KEY,
-    nombre       VARCHAR(100) NOT NULL UNIQUE  -- 'Septiembre', 'Febrero', ...
+    nombre       VARCHAR(50) NOT NULL UNIQUE  
 );
 
 CREATE TABLE modalidad (
     modalidad_id SERIAL PRIMARY KEY,
-    nombre       VARCHAR(100) NOT NULL UNIQUE  -- 'Presencial', 'Online'
+    nombre       VARCHAR(50) NOT NULL UNIQUE  
 );
 
 CREATE TABLE rol (
     rol_id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL UNIQUE        -- 'TA', 'LI', ...
+    nombre VARCHAR(50) NOT NULL UNIQUE        
 );
 
 -- Tipos de proyecto ligados a una vertical

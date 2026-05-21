@@ -8,23 +8,23 @@
 
 -- 1. CAMPUS
 
-INSERT INTO campus (nombre) VALUES
+INSERT INTO campus (campus) VALUES
     ('Madrid'),
     ('Valencia');
 
 
 -- 2. VERTICAL
 
-INSERT INTO vertical (nombre) VALUES
-    ('DS'),   -- Data Science
-    ('FS');   -- Full Stack
+INSERT INTO vertical (vertical) VALUES
+    ('DataScience'),
+    ('FullStack');
 
 
 -- 3. PROMOCION
 
-INSERT INTO promocion (nombre) VALUES
-    ('Septiembre'),
-    ('Febrero');
+INSERT INTO promocion (nombre, anio) VALUES
+    ('Septiembre', 2023),
+    ('Febrero',    2024);
 
 
 -- 4. MODALIDAD
@@ -36,9 +36,9 @@ INSERT INTO modalidad (nombre) VALUES
 
 -- 5. ROL
 
-INSERT INTO rol (nombre) VALUES
-    ('TA'),
-    ('LI');
+INSERT INTO rol (rol) VALUES
+    ('Teach Assistant'),
+    ('Lead Instructor');
 
 
 -- 6. PROYECTO_TIPO
@@ -63,12 +63,15 @@ INSERT INTO proyecto_tipo (nombre, vertical_id) VALUES
 -- promocion: Septiembre=1, Febrero=2
 
 INSERT INTO grupo (campus_id, vertical_id, promocion_id, fecha_inicio) VALUES
-    (1, 1, 1, '2023-09-18'),   -- grupo_id=1: DS · Septiembre · Madrid
-    (1, 1, 2, '2024-02-12'),   -- grupo_id=2: DS · Febrero    · Madrid
-    (1, 2, 1, '2023-09-18'),   -- grupo_id=3: FS · Septiembre · Madrid
-    (2, 2, 2, '2024-02-12'),   -- grupo_id=4: FS · Febrero    · Valencia
-    (2, 2, 1, '2023-09-18'),   -- grupo_id=5: FS · Septiembre · Valencia (profesora Rosalva)
-    (1, 2, 2, '2024-02-12');   -- grupo_id=6: FS · Febrero    · Madrid   (profesora Angélica)
+    (1, 1, 1, 1, '2023-09-18'),   -- grupo_id=1: DS · Sept · Madrid    · Presencial
+    (1, 1, 1, 2, '2023-09-18'),   -- grupo_id=2: DS · Sept · Madrid    · Online
+    (1, 1, 2, 1, '2024-02-12'),   -- grupo_id=3: DS · Feb  · Madrid    · Presencial
+    (1, 2, 1, 1, '2023-09-18'),   -- grupo_id=4: FS · Sept · Madrid    · Presencial
+    (1, 2, 1, 2, '2023-09-18'),   -- grupo_id=5: FS · Sept · Madrid    · Online
+    (1, 2, 2, 1, '2024-02-12'),   -- grupo_id=6: FS · Feb  · Madrid    · Presencial
+    (2, 2, 1, 1, '2023-09-18'),   -- grupo_id=7: FS · Sept · Valencia  · Presencial
+    (2, 2, 2, 1, '2024-02-12'),   -- grupo_id=8: FS · Feb  · Valencia  · Presencial
+    (2, 2, 2, 2, '2024-02-12');   -- grupo_id=9: FS · Feb  · Valencia  · Online
 
 
 -- 8. ESTUDIANTE
@@ -433,18 +436,15 @@ INSERT INTO profesor (nombre, rol_id) VALUES
 
 
 -- 11. PROFESOR_GRUPO
--- modalidad: Presencial=1, Online=2
--- grupo: DS·Sept·Madrid=1, DS·Feb·Madrid=2, FS·Sept·Madrid=3,
---        FS·Feb·Valencia=4, FS·Sept·Valencia=5, FS·Feb·Madrid=6
 
 INSERT INTO profesor_grupo (profesor_id, grupo_id, modalidad_id) VALUES
-    (1, 1, 1),
-    (2, 1, 1),
-    (7, 1, 1),
-    (10, 1, 2),
-    (3, 3, 1),
-    (9, 3, 2),
-    (6, 4, 1),
-    (4, 5, 1),
-    (5, 6, 1),
-    (8, 6, 2);
+    (1,  1),   
+    (2,  1),   
+    (7,  1),   
+    (10, 2),   
+    (3,  4),   
+    (9,  5),   
+    (6,  6),   
+    (4,  7),   
+    (5,  8),  
+    (8,  9);

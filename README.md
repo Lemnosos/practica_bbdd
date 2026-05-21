@@ -1,12 +1,17 @@
 # Bootcamp School Database — The Bridge
 
-Base de datos relacional PostgreSQL construida a partir de datos planos de estudiantes y claustro de un bootcamp. El esquema está normalizado para soportar múltiples campus, verticales, promociones y modalidades.
+Base de datos relacional PostgreSQL diseñada y construida a partir de datos planos de estudiantes y claustro de un bootcamp. El esquema está normalizado para soportar múltiples campus, verticales, promociones y modalidades, con capacidad de escalar sin cambios estructurales.
 
-## Modelo relacional
+## Modelos
 
-![Modelo relacional](TheBridge_modelo_relacional.svg)
+**Modelo relacional**
 
-El diagrama interactivo está disponible en [TheBridgeERD.html](TheBridgeERD.html).
+![Modelo relacional](modelo_relacional.png)
+
+**Modelo lógico**
+
+![Modelo lógico](modelo_logico.png)
+
 
 ### Tablas
 
@@ -14,13 +19,13 @@ El diagrama interactivo está disponible en [TheBridgeERD.html](TheBridgeERD.htm
 |---|---|
 | `campus` | Sedes (Madrid, Valencia, …) |
 | `vertical` | Itinerarios formativos (DS, FS, …) |
-| `promocion` | Cohortes por fecha de inicio (Septiembre, Febrero, …) |
+| `promocion` | Cohortes por convocatoria (Septiembre, Febrero, …) |
 | `modalidad` | Formato de clase (Presencial, Online) |
 | `rol` | Rol del profesor (TA, LI) |
-| `proyecto_tipo` | Tipos de proyecto evaluable por vertical |
+| `proyecto_tipo` | Tipos de proyecto evaluable, ligados a una vertical |
 | `grupo` | Combinación única campus + vertical + promoción |
-| `estudiante` | Alumnos, asignados a un grupo |
-| `calificacion` | Resultado por estudiante y tipo de proyecto |
+| `estudiante` | Alumnos asignados a un grupo |
+| `calificacion` | Resultado (Apto / No Apto) por estudiante y tipo de proyecto |
 | `profesor` | Profesores del claustro |
 | `profesor_grupo` | Asignación de profesores a grupos con modalidad |
 
@@ -31,9 +36,9 @@ El diagrama interactivo está disponible en [TheBridgeERD.html](TheBridgeERD.htm
 ├── notebooks/
 │   └── generate_inserts.ipynb   # Procesa los CSV brutos y genera los INSERT
 ├── sql/
-│   ├── 01_create_tables.sql     # DDL — creación de tablas
+│   ├── 01_create_tables.sql     # DDL — creación de tablas y restricciones
 │   ├── 02_insert_data.sql       # DML — inserción de datos
-│   └── 03_queries_demo.sql      # Queries de demostración
+│   └── 03_queries_demo.sql      # 8 queries de demostración
 ├── src/
 │   └── datos_brutos/            # CSV originales (clase_1..4, claustro)
 ├── TheBridge_modelo_relacional.svg
@@ -60,4 +65,23 @@ Si necesitas regenerar `02_insert_data.sql` desde los CSV originales, ejecuta to
 \i sql/03_queries_demo.sql
 ```
 
-Las queries cubren: listado de estudiantes, conteo por grupo, tasa de aprobación por proyecto, estudiantes con todos los proyectos aprobados, ranking de suspensos y asignaciones de profesores.
+Las 8 queries cubren:
+
+| # | Consulta |
+|---|---|
+| Q1 | Listado completo de estudiantes con campus, vertical y promoción |
+| Q2 | Número de estudiantes por campus, vertical y promoción |
+| Q3 | Tasa de aprobación por tipo de proyectos y vertical |
+| Q4 | Estudiantes que aprobaron todos sus proyectos |
+| Q5 | Ranking de estudiantes por número de proyectos suspendidos |
+| Q6 | Detalle de calificaciones por estudiante |
+| Q7 | Grupos con sus profesores TA y LI asignados |
+| Q8 | Número de alumnos convertidos en profesore |
+| Q9 | Listado de todas las tablas del entorno de trabajo|
+
+## Decisiones de diseño
+
+- **`proyecto_tipo` ligado a `vertical`**: cada vertical tiene su propio catálogo de proyectos (DS tiene EDA, ML… ; FS tiene los suyos), evitando mezclas entre itinerarios.
+- **`grupo` como entidad central**: la combinación `(campus, vertical, promocion)` con restricción `UNIQUE` garantiza que no existan duplicados y centraliza las FK de `estudiante` y `profesor_grupo`.
+- **`calificacion` desacoplada**: almacena un resultado por par `(estudiante, proyecto_tipo)`, permitiendo añadir nuevos tipos de proyecto sin tocar el resto del esquema.
+- **Escalabilidad**: añadir un campus, vertical, promoción o modalidad nueva solo requiere un `INSERT` en la tabla de catálogo correspondiente, sin modificar el esquema.
