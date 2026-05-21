@@ -1,0 +1,116 @@
+
+<div id="erd" style="padding: 1rem 0"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+
+const diagram = `erDiagram
+  campus {
+    serial campus_id PK
+    varchar nombre
+  }
+  vertical {
+    serial vertical_id PK
+    varchar nombre
+  }
+  promocion {
+    serial promocion_id PK
+    varchar nombre
+  }
+  modalidad {
+    serial modalidad_id PK
+    varchar nombre
+  }
+  rol {
+    serial rol_id PK
+    varchar nombre
+  }
+  proyecto_tipo {
+    serial proyecto_tipo_id PK
+    varchar nombre
+    int vertical_id FK
+  }
+  grupo {
+    serial grupo_id PK
+    int campus_id FK
+    int vertical_id FK
+    int promocion_id FK
+    date fecha_inicio
+  }
+  estudiante {
+    serial estudiante_id PK
+    varchar nombre
+    varchar email
+    int grupo_id FK
+  }
+  calificacion {
+    serial calificacion_id PK
+    int estudiante_id FK
+    int proyecto_tipo_id FK
+    varchar resultado
+  }
+  profesor {
+    serial profesor_id PK
+    varchar nombre
+    int rol_id FK
+  }
+  profesor_grupo {
+    serial profesor_grupo_id PK
+    int profesor_id FK
+    int grupo_id FK
+    int modalidad_id FK
+  }
+
+  campus ||--o{ grupo : "tiene"
+  vertical ||--o{ grupo : "tiene"
+  vertical ||--o{ proyecto_tipo : "define"
+  promocion ||--o{ grupo : "tiene"
+  grupo ||--o{ estudiante : "pertenece"
+  grupo ||--o{ profesor_grupo : "asignado"
+  estudiante ||--o{ calificacion : "recibe"
+  proyecto_tipo ||--o{ calificacion : "evaluado en"
+  profesor ||--o{ profesor_grupo : "imparte"
+  modalidad ||--o{ profesor_grupo : "con"
+  rol ||--o{ profesor : "tiene"
+`;
+
+const { svg } = await mermaid.render('erd-svg', diagram);
+document.getElementById('erd').innerHTML = svg;
+
+document.querySelectorAll('#erd svg .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+
+document.querySelectorAll('#erd svg .row-rect-odd path, #erd svg .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>
