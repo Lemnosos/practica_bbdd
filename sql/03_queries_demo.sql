@@ -133,6 +133,9 @@ WHERE e.nombre = p.nombre;
 -- ------------------------------------------------------------
 -- Q9: Listado de todas las tablas del entorno de trabajo 
 ---------------------------------------------------------------
-SELECT table_name 
-FROM information_schema.tables 
-WHERE table_type = 'BASE TABLE' and table_name not like 'pg_%' and table_name not like 'sql_%';
+SELECT table_name
+FROM information_schema.tables
+WHERE table_type = 'BASE TABLE'
+  AND table_schema NOT IN ('pg_catalog', 'information_schema');
+
+
